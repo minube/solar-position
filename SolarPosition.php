@@ -1,9 +1,8 @@
 <?php
 
 /**
- * minube.com
+ * www.minube.com
  * User: abmo
- * Date: 23/06/17
  */
 class SolarPosition
 {

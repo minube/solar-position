@@ -1,5 +1,6 @@
 # Solar Position
 Calculate the sunset and sunrise times for a particular location and date, as well as the different twilight phases (civil, nautical, astronomical) times. 
+More details about the different sun position phases in [timeanddate.com](https://www.timeanddate.com/astronomy/about-sun-calculator.html).
 
 ## Input
 * Date: array('day', 'month', 'year')

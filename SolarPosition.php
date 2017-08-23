@@ -19,7 +19,7 @@ class SolarPosition
     const SUNRISE_DEPRESSION = 0.833;
     const TIME_UNIT = 60.0;
     const DAY_TIME_UNIT = 24;
-
+    
     /**
      * Calculate timezone offset days from timezone text identifier to UTC as reference (i.e. "Europe/Amsterdam")
      * @param string $timeZoneText
@@ -36,7 +36,7 @@ class SolarPosition
         }
         return $offset;
     }
-
+    
     /**
      * Calculate julian day from date (day, month, year) and timezone
      * @param array $date
@@ -49,21 +49,21 @@ class SolarPosition
         $month = $date['month'];
         $year = $date['year'];
         $day += $this->calculateTimeZoneOffset($timeZoneText);
-
+        
         if ($month <= 2) {
             $year -= 1;
             $month += 12;
         }
-
+        
         $julianDay = floor(365.25 * ($year + 4716)) + floor(30.6001 * ($month + 1)) + $day - 1524.5;
-
+        
         if ($julianDay > self::MAX_JULIAN_DAY) {
             $tmpYear = floor($year / 100.0);
             $julianDay += 2 - $tmpYear + floor($tmpYear / 4.0);
         }
         return $julianDay;
     }
-
+    
     /**
      * Calculate Julian Day from Julian Century value
      * @param $julianCentury
@@ -73,7 +73,7 @@ class SolarPosition
     {
         return ($julianCentury * self::MULTIPLIER_JULIAN_CENTURY) + self::OFFSET_JULIAN_CENTURY;
     }
-
+    
     /**
      * Calculate Julian Century from Julian Day value
      * @param $julianDay
@@ -83,7 +83,7 @@ class SolarPosition
     {
         return ($julianDay - self::OFFSET_JULIAN_CENTURY) / self::MULTIPLIER_JULIAN_CENTURY;
     }
-
+    
     /**
      * Calculate mean obliquity of ecliptic (term used by astronomers for the inclination of Earth's equator
      * with respect to the ecliptic) from Julian Century
@@ -94,9 +94,9 @@ class SolarPosition
     {
         $seconds = 21.448 - $julianCentury * (46.8150 + ($julianCentury * (0.00059 - $julianCentury * (0.001813))));
         return 23.0 + ((26.0 + ($seconds / self::TIME_UNIT)) / self::TIME_UNIT);
-
+        
     }
-
+    
     /**
      * Corrected obliquity in degrees
      * @param $julianCentury
@@ -108,7 +108,7 @@ class SolarPosition
         $obliquityInDegrees = $this->calcMeanObliquityOfEcliptic($julianCentury) + (0.00256 * cos(deg2Rad($omega)));
         return $obliquityInDegrees;
     }
-
+    
     /**
      * Calculate mean anomaly of the sun position
      * @param $julianCentury
@@ -118,7 +118,7 @@ class SolarPosition
     {
         return 357.52911 + $julianCentury * (35999.05029 - 0.0001537 * $julianCentury);
     }
-
+    
     /**
      * Geometric mean longitude of sun position
      * @param $julianCentury
@@ -130,7 +130,7 @@ class SolarPosition
         $geomLong = $geomLong % 360;
         return $geomLong;
     }
-
+    
     /**
      * Eccentricity Earth Orbit calculation
      * @param $julianCentury
@@ -140,7 +140,7 @@ class SolarPosition
     {
         return 0.016708634 - $julianCentury * (0.000042037 + 0.0000001267 * $julianCentury);
     }
-
+    
     /**
      * Equation of Time calculation in minutes of time
      * @param $julianCentury
@@ -154,19 +154,19 @@ class SolarPosition
         $meanAnomaly = $this->calcGeomMeanAnomaly($julianCentury);
         $obliquity = tan(deg2Rad($this->calcObliquityCorrection($julianCentury)) / 2.0);
         $obliquity *= $obliquity;
-
+        
         $sin2MeanLong = sin(2.0 * $meanLongInRad);
         $sinMeanAnomaly = sin(deg2Rad($meanAnomaly));
         $cos2MeanLong = cos(2.0 * $meanLongInRad);
         $sin4MeanLong = sin(4.0 * $meanLongInRad);
         $sin2MeanAnomaly = sin(2.0 * deg2Rad($meanAnomaly));
-
+        
         $equationOfTime = $obliquity * $sin2MeanLong - 2.0 * $eccentricity * $sinMeanAnomaly +
             4.0 * $eccentricity * $obliquity * $sinMeanAnomaly * $cos2MeanLong -
             0.5 * $obliquity * $obliquity * $sin4MeanLong - 1.25 * $eccentricity * $eccentricity * $sin2MeanAnomaly;
         return rad2Deg($equationOfTime) * 4.0;
     }
-
+    
     /**
      * Equation of the center in degrees
      * @param $julianCentury
@@ -183,7 +183,7 @@ class SolarPosition
             $sin2MeanAnomaly * (0.019993 - 0.000101 * $julianCentury) + $sin3MeanAnomaly * 0.000289;
         return $equationOfCenter;
     }
-
+    
     /**
      * Calculate true (ecliptic) longitude of the sun in degrees
      * @param $julianCentury
@@ -195,7 +195,7 @@ class SolarPosition
         $equationOfCenter = $this->calcEquationOfCenter($julianCentury);
         return $meanLongitude + $equationOfCenter;
     }
-
+    
     /**
      * Calculate apparent logintude of the sun in degrees
      * @param $julianCentury
@@ -207,7 +207,7 @@ class SolarPosition
         $omega = 125.04 - 1934.136 * $julianCentury;
         return $trueLongitude - 0.00569 - 0.00478 * sin(deg2Rad($omega));
     }
-
+    
     /**
      * Sun declination angle in degrees
      * @param $julianCentury
@@ -221,7 +221,7 @@ class SolarPosition
         $theta = rad2Deg(asin($sinT));
         return $theta;
     }
-
+    
     /**
      * Hour angle calculation
      * @param $latitude
@@ -242,7 +242,7 @@ class SolarPosition
                 (cos($latitudeInRad) * cos($solarDecInRad))) - (tan($latitudeInRad) * tan($solarDecInRad))));
         return $hourAngle * $negativeFlag;
     }
-
+    
     /**
      * Create UTC DateTime object
      * @param $timeUTC
@@ -256,19 +256,19 @@ class SolarPosition
         $hour = (int)$timeUTC;
         $minute = (int)(($timeUTC - $hour) * self::TIME_UNIT);
         $second = (int)(((($timeUTC - $hour) * self::TIME_UNIT) - $minute) * self::TIME_UNIT);
-
+        
         $minute += (int)floor($second / self::TIME_UNIT);
         $second -= (int)(self::TIME_UNIT * floor($second / self::TIME_UNIT));
         $hour += (int)floor($minute / self::TIME_UNIT);
         $minute -= (int)(self::TIME_UNIT * floor($minute / self::TIME_UNIT));
         $date['day'] += (int)floor($hour / self::DAY_TIME_UNIT);
         $hour -= (int)(self::DAY_TIME_UNIT * floor($hour / self::DAY_TIME_UNIT));
-
+        
         $dateTimeUtc->setDate($date['year'], $date['month'], $date['day']);
         $dateTimeUtc->setTime($hour, $minute, $second);
         return $dateTimeUtc;
     }
-
+    
     /**
      * UTC time calculation
      * @param $julianCentury
@@ -287,7 +287,7 @@ class SolarPosition
         $utcTime = 720.0 + $timeDiff - $equationOfTime;
         return $utcTime;
     }
-
+    
     /**
      * Calculate UTC Time of Solar Noon
      * @param $julianDay
@@ -301,7 +301,7 @@ class SolarPosition
         $utcTime = 720.0 + (-$longitude * 4.0) - $equationOfTime;
         return $utcTime;
     }
-
+    
     /**
      * Calculate solar time depending on a particular location, date and solar depression
      * @param $date
@@ -327,7 +327,7 @@ class SolarPosition
         $utcTime = $this->calculateUtcTime($newJulianCentury, $latitude, $longitude, $depression);
         return $this->getUtcDateTime($utcTime, $date);
     }
-
+    
     /**
      * Get Solar Noon Time, when the Sun is at the highest altitude
      * @param $date
@@ -340,7 +340,7 @@ class SolarPosition
         $utcTime = $this->calculateUtcNoonTime($this->calculateJulianDay($date, $timeZone), $longitude);
         return $this->getUtcDateTime($utcTime, $date);
     }
-
+    
     /**
      * Get Sunset hour of a particular location and date
      * @param $date
@@ -353,7 +353,7 @@ class SolarPosition
     {
         return $this->calculateSolarTime($date, $latitude, $longitude, self::SUNSET_DEPRESSION, $timeZone);
     }
-
+    
     /**
      * Get Sunrise hour of a particular location and date
      * @param $date
@@ -366,7 +366,7 @@ class SolarPosition
     {
         return $this->calculateSolarTime($date, $latitude, $longitude, self::SUNRISE_DEPRESSION, $timeZone);
     }
-
+    
     /**
      * Get the beginning of the Civil Twilight phase.
      * The Sun is just below the horizon, so there is generally enough natural light to carry out most outdoor
@@ -382,7 +382,7 @@ class SolarPosition
     {
         return $this->calculateSolarTime($date, $latitude, $longitude, self::CIVIL_DEPRESSION, $timeZone);
     }
-
+    
     /**
      * Get the end of the Civil Twilight phase.
      * @param $date
@@ -395,7 +395,7 @@ class SolarPosition
     {
         return $this->calculateSolarTime($date, $latitude, $longitude, -self::CIVIL_DEPRESSION, $timeZone);
     }
-
+    
     /**
      * Get the beginning of the Nautical Twilight phase.
      * Nautical twilight is the second twilight phase, when both the horizon and the brighter stars are usually visible
@@ -411,7 +411,7 @@ class SolarPosition
     {
         return $this->calculateSolarTime($date, $latitude, $longitude, self::NAUTICAL_DEPRESSION, $timeZone);
     }
-
+    
     /**
      * Get the end of the Nautical Twilight phase.
      * @param $date
@@ -424,7 +424,7 @@ class SolarPosition
     {
         return $this->calculateSolarTime($date, $latitude, $longitude, -self::NAUTICAL_DEPRESSION, $timeZone);
     }
-
+    
     /**
      * Get the beginning of the Astronomical Twilight phase.
      * Darkest phase. It is the earliest stage of dawn in the morning and the last stage of dusk in the evening.
@@ -437,9 +437,14 @@ class SolarPosition
      */
     public function getAstronomicalTwilightBegin($date, $latitude, $longitude, $timeZone = "")
     {
-        return $this->calculateSolarTime($date, $latitude, $longitude, self::ASTRONOMICAL_DEPRESSION, $timeZone);
+        return $this->calculateSolarTime(
+            $date,
+            $latitude,
+            $longitude,
+            self::ASTRONOMICAL_DEPRESSION,
+            $timeZone);
     }
-
+    
     /**
      * Get the end of the Astronomical Twilight phase.
      * @param $date

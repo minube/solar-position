@@ -1,10 +1,11 @@
 <?php
 
-/**
- * www.minube.com
- * User: abmo
- */
-class SolarPosition
+namespace SolarPosition;
+
+use DateTime;
+use DateTimeZone;
+
+class Calculator
 {
     const CIVIL_DEPRESSION = 6.0;
     const NAUTICAL_DEPRESSION = 12.0;

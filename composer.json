@@ -1,0 +1,12 @@
+{
+  "name": "solar-position",
+  "description": "Minube Solar Position PHP Library",
+  "autoload": {
+    "psr-4": {
+      "SolarPosition\\": "src/SolarPosition/"
+    }
+  },
+  "config": {
+    "vendor-dir": "vendor"
+  }
+}

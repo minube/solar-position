@@ -1,6 +1,7 @@
 {
-  "name": "solar-position",
-  "description": "Minube Solar Position PHP Library",
+  "name": "minube/solar-position",
+  "homepage": "http://minube.com",
+  "description": "Solar Position PHP Library for sunset, sunrise, twilight phases time calculation.",
   "autoload": {
     "psr-4": {
       "SolarPosition\\": "src/SolarPosition/"
